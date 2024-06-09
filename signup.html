@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MongoDB Data Display</title>
+    <link rel="stylesheet" href="artist.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+    <style>
+        .top-half {
+            margin-bottom: 20px;
+        }
+        .box {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .box:hover {
+            transform: scale(1.05);
+        }
+        .city-box
+         {
+            text-align: center;
+            margin: 10px;
+            padding: 10px; 
+            border: 2px solid #5c0f9b; 
+            border-width: 100%;
+            height: auto;
+        }
+
+        .artist {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #e6e6fa; 
+            border-radius: 5px;
+        }
+        .artist h3 {
+            margin-top: 0;
+            color: #8a2be2; 
+        }
+        .artist p {
+            margin: 5px 0;
+            color: #4b0082; 
+        }
+        .container-fluid {
+            padding: 20px;
+        }
+        .city-box h2 {
+            font-size: 24px;
+            color: #5c0f9b; 
+        }
+        .makeup-match {
+            position: fixed;
+            top: 30px;
+            left: 325px; 
+            background-color: #ffffff; 
+            color: #5c0f9b;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 25px;
+            font-weight: bold;
+        }
+        /* New styles for signup button and form visibility */
+        .signup-container {
+            display: none;
+        }
+        #signupButton {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 10px 20px;
+            background-color: #5c0f9b;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Signup button -->
+    <button id="signupButton">Signup</button>
+
+    <!-- Signup form -->
+    <div class="container mt-5 signup-container" id="signupContainer" style="display: none;">
+        <h2>Makeup Artist Sign Up</h2>
+        <form action="/signup" method="POST">
+            <label for="artist">Artist:</label>
+            <input type="text" id="artist" name="artist" value="Auto generated" disabled>
+            
+            <label for="salonName">Salon Name/Freelance:</label>
+            <input type="text" id="salonName" name="salonName" required>
+            
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required>
+            
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" required>
+            
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" required>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="instaId">Instagram ID:</label>
+            <input type="text" id="instaId" name="instaId" required>
+            
+            <label for="genderArtist">Gender of Makeup Artist:</label>
+            <select id="genderArtist" name="genderArtist">
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="transgender">Transgender</option>
+            </select>
+            
+            <label for="servicesFor">Services for:</label>
+            <select id="servicesFor" name="servicesFor">
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="transgender">Transgender</option>
+            </select>
+            
+            <label>Available Days:</label><br>
+            <div class="checkbox-group">
+                <input type="checkbox" id="monday" name="availableDays" value="Monday">
+                <label for="monday">Monday</label>
+                <input type="checkbox" id="tuesday" name="availableDays" value="Tuesday">
+                <label for="tuesday">Tuesday</label>
+                <input type="checkbox" id="wednesday" name="availableDays" value="Wednesday">
+                <label for="wednesday">Wednesday</label>
+                <input type="checkbox" id="thursday" name="availableDays" value="Thursday">
+                <label for="thursday">Thursday</label>
+                <input type="checkbox" id="friday" name="availableDays" value="Friday">
+                <label for="friday">Friday</label>
+                <input type="checkbox" id="saturday" name="availableDays" value="Saturday">
+                <label for="saturday">Saturday</label>
+                <input type="checkbox" id="sunday" name="availableDays" value="Sunday">
+                <label for="sunday">Sunday</label>
+            </div>
+            
+            <label for="serviceType">Service Type:</label>
+            <select id="serviceType" name="serviceType">
+                <option value="home">Home Service</option>
+                <option value="salon">Salon Service</option>
+            </select>
+            
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" required></textarea>
+            
+            <input type="submit" value="Sign Up">
+        </form>
+    </div>
+    <!-- Back button -->
+    <button id="backButton" style="position: fixed; top: 30px; left: 30px; padding: 10px 20px;">Back</button>
+
+    <div class="makeup-match">Makeup Match</div>
+    <div id="container">
+        <div class="top-half" id="dataDisplay">
+            <!-- Data from MongoDB will be displayed here -->
+        </div>
+        <div class="bottom-half d-flex justify-content-around">
+            <div class="box" id="Lahore" onclick="fetchArtistsByCity('Lahore')">
+                <
+                <div class="city-box">
+                    <h2 class="city">Lahore</h2>
+                    <img src="images/lahore.jpg" alt="Lahore">
+                </div>
+            </div>
+            <div class="box" id="Karachi" onclick="fetchArtistsByCity('Karachi')">
+                <div class="city-box">
+                    <h2 class="city">Karachi</h2>
+                    <img src="images/karachi.jpeg" alt="Karachi">
+                </div>
+            </div>
+            <div class="box" id="Islamabad" onclick="fetchArtistsByCity('Islamabad')">
+                <div class="city-box">
+                    <h2 class="city">Islamabad</h2>
+                    <img src="images/islamabad.jpeg" alt="Islamabad">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container-fluid" style="display: none; border: 2px solid black;">
+        <div class="row">
+            <div class="col-md-3">
+                <div id="b1">
+                    <div class="b2">
+                        <input type="checkbox" id="price1" onclick="fetchArtistsByPrice('Lahore', '0-50')">
+                        <label for="price1">$0 - $50</label>
+                    </div>
+                    <div class="b2">
+                        <input type="checkbox" id="price2" onclick="fetchArtistsByPrice('Lahore', '50-100')">
+                        <label for="price2">$50 - $100</label>
+                    </div>
+                    <div class="b2">
+                        <input type="checkbox" id="price3" onclick="fetchArtistsByPrice('Lahore', '100-200')">
+                        <label for="price3">$100 - $200</label>
+                    </div>
+                    <div class="b2">
+                        <input type="checkbox" id="price4" onclick="fetchArtistsByPrice('Lahore', '200-300')">
+                        <label for="price4">$200 - $300</label>
+                    </div>
+                    <div class="b2">
+                        <input type="checkbox" id="price5" onclick="fetchArtistsByPrice('Lahore', '300-400')">
+                        <label for="price5">$300 - $400</label>
+                    </div>
+                    <div class="b2">
+                        <input type="checkbox" id="price6" onclick="fetchArtistsByPrice('Lahore', '400-500')">
+                        <label for="price6">$400 - $500</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-8">
+                <div id="Data"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function fetchArtistsByCity(city) {
+            const url = `http://localhost:3000/artists/city/${city}`;
+            fetchArtists(url);
+        }
+
+        async function fetchArtistsByPrice(city, range) {
+            const url = `http://localhost:3000/artists/${city}/filter/${range}`;
+            fetchArtists(url);
+        }
+
+        async function fetchArtists(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const artists = await response.json();
+                if (url.includes("Lahore")) {
+                    displayArtists(artists, 'Lahore');
+                } else if (url.includes("Karachi")) {
+                    displayArtists(artists, 'Karachi');
+                } else if (url.includes("Islamabad")) {
+                    displayArtists(artists, 'Islamabad');
+                } else if (url.includes("filter")) {
+                    displayArtists(artists, 'filtered');
+                }
+            } catch (error) {
+                console.error('Error fetching artists:', error);
+            }
+        }
+
+        function displayArtists(artists, city) {
+            const cityDataElement = document.getElementById('Data');
+            document.getElementsByClassName('container-fluid')[0].style.display = 'block';
+            document.getElementById('container').style.display = 'none';
+
+            if (city !== 'filtered') {
+                var cityElements = document.getElementsByClassName('city-box');
+                for (var i = 0; i < cityElements.length; i++) {
+                    cityElements[i].style.display = 'none';
+                }
+            }
+
+            cityDataElement.innerHTML = '';
+            artists.forEach(artist => {
+                const artistElement = document.createElement('div');
+                artistElement.classList.add('artist');
+                artistElement.innerHTML = `
+                    <h3>${artist.saloonName}</h3>
+                    <p><strong>Address:</strong> ${artist.address}</p>
+                    <p><strong>Phone Number:</strong> ${artist.phoneNumber}</p>
+                `;
+                cityDataElement.appendChild(artistElement);
+            });
+        }
+
+        document.getElementById('signupButton').addEventListener('click', function() {
+            const signupContainer = document.getElementById('signupContainer');
+            signupContainer.style.display = signupContainer.style.display === 'none' || signupContainer.style.display === '' ? 'block' : 'none';
+        });
+
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>
